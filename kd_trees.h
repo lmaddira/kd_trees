@@ -12,13 +12,14 @@
 
 
 
-namespace kd_tress{
+namespace kd_trees{
     constexpr size_t kDimensions = 5; // define dimensions during compile time
 
     struct Point
     {
         std::array<double, kDimensions> coordinates_;
         Point(std::array<double, kDimensions> coordinates) : coordinates_(std::move(coordinates)) {}  
+        void print();
     };
 
     double distance(const Point& from_pt, const Point& to_point);
@@ -70,12 +71,15 @@ namespace kd_tress{
         /**
          * @details searaches the tree to find if the point is in the tree recursively
         */
-        bool search(const std::shared_ptr<KDNode>& node, const Point& pt, size_t depth);
+        bool searchRec(const std::shared_ptr<KDNode>& node, const Point& pt, size_t depth);
 
         /**
          * @details searaches the tree to find if the point is in the tree
         */
         bool search(const Point& pt);
+
+        void print(const std::shared_ptr<KDNode>& node);
+        void print();
     };
 } // namespace kd_trees
 
