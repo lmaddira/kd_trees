@@ -14,7 +14,7 @@
 
 
 namespace kd_trees{
-    constexpr size_t kDimensions = 5; // define dimensions during compile time
+    constexpr size_t kDimensions = 2; // define dimensions during compile time
 
     struct Point
     {
@@ -59,12 +59,12 @@ namespace kd_trees{
          * @param depth is the depth of the current recursion at which \p pt is being checked to insert
          * @param pt to be inserted in the tree   
         */
-        void insertRec(std::shared_ptr<KDNode>& node, const Point& pt, size_t depth);
+        void insertRec(std::shared_ptr<KDNode>& node, Point& pt, size_t depth);
 
         /**
          * @details inserts \p pt in the tree 
         */
-        void insert(const Point& pt);
+        void insert(Point& pt);
 
         /**
          * @details finds and returns the nearest node to \p pt in the tree recursively
@@ -78,7 +78,7 @@ namespace kd_trees{
         /**
          * @details finds and returns the nearest node to \p pt in the tree
         */
-        std::shared_ptr<KDNode> nearest(const Point& pt);
+        Point nearest(const Point& pt);
 
         /**
          * @details searaches the tree to find if the point is in the tree recursively

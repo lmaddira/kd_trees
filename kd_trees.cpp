@@ -54,22 +54,30 @@ namespace kd_trees
         return std::sqrt(distance);
     }
 
-    void KDTree::insertRec(std::shared_ptr<KDNode>& node, const Point& pt, size_t depth)
+    void KDTree::insertRec(std::shared_ptr<KDNode>& node, Point& pt, size_t depth)
     {
-        if (!node)
+        if (node == nullptr)
         {
             node = std::make_shared<KDNode>(pt);
+            return;
         }
 
-        int cd = kDimensions % depth;
+        int cd = depth % kDimensions;
+        // std::cout<<" cd "<< cd <<" depth "<< depth << " pt "<<pt.coordinates_[cd] <<" node pt "<< node->pt_.coordinates_[cd]<<std::endl;
 
         if (pt.coordinates_[cd] < node->pt_.coordinates_[cd])
+        {
+            // std::cout<<"going left"<<std::endl;
             insertRec(node->left_ptr_, pt, depth+1);
+        }
         else
+        {
+            // std::cout<<"going right"<<std::endl;
             insertRec(node->right_ptr_, pt, depth+1);
+        }
     }
 
-    void KDTree::insert(const Point& pt)
+    void KDTree::insert(Point& pt)
     {
         insertRec(root_, pt, 0);
     }
@@ -84,7 +92,7 @@ namespace kd_trees
             min_dist = curr_dist;
             nearest_node = node;
         }
-        int cd = kDimensions % depth;
+        int cd = depth % kDimensions;
 
         double dx = target.coordinates_[cd] - node->pt_.coordinates_[cd];
         std::shared_ptr<KDNode> next_branch = dx < 0 ? node->left_ptr_ : node->right_ptr_;
@@ -98,24 +106,24 @@ namespace kd_trees
         }
     }
 
-    std::shared_ptr<KDNode> KDTree::nearest(const Point& pt)
+    Point KDTree::nearest(const Point& pt)
     {
         if(!root_)
         {
             std::cout<<"Nearest node is null as tree doesn't have any points !!!!!!!!! "<<std::endl;
-            return root_;
+            throw std::logic_error("tree is empty!");
         }    
         auto nearest_node = root_;
         double min_dist = distance(nearest_node->pt_, pt);
         nearestRec(root_, pt, 0, min_dist, nearest_node);
-        return nearest_node;
+        return nearest_node->pt_;
     }
 
     bool KDTree::searchRec(const std::shared_ptr<KDNode>& node, const Point& target, size_t depth)
     {
         if(!node) return false;
         if(node->pt_ == target) return true;
-        int cd = kDimensions % depth;
+        int cd = depth % kDimensions;
         if(target.coordinates_[cd] < node->pt_.coordinates_[cd])
             return searchRec(node->left_ptr_, target, depth+1);
         return searchRec(node->right_ptr_, target, depth+1);
@@ -130,7 +138,9 @@ namespace kd_trees
     {
         if(!node) return;
         node->pt_.print();
+        std::cout<<"left";
         print(node->left_ptr_);
+        std::cout<<"right";
         print(node->right_ptr_);
     }
 
