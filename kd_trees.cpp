@@ -17,6 +17,32 @@ namespace kd_trees
         std::cout<<std::endl;
     }
 
+    double& Point::operator[](int index)
+    {
+        if(index < 0 || index >= kDimensions)
+            throw std::out_of_range("index is out of range");
+
+        return this->coordinates_[index];
+    }
+
+    const double& Point::operator[](int index) const
+    {
+        if(index < 0 || index >= kDimensions)
+            throw std::out_of_range("index is out of range");
+
+        return this->coordinates_[index];
+    }
+
+    bool Point::operator==(const Point& other)const
+    {
+        for (int i = 0; i < kDimensions; ++i)
+        {
+            if(this->coordinates_[i] != other.coordinates_[i])
+                return false;
+        }
+        return true;
+    }
+
     double distance(const Point& from_pt, const Point& to_point)
     {
         double distance = 0;
@@ -87,7 +113,12 @@ namespace kd_trees
 
     bool KDTree::searchRec(const std::shared_ptr<KDNode>& node, const Point& target, size_t depth)
     {
-        return true;
+        if(!node) return false;
+        if(node->pt_ == target) return true;
+        int cd = kDimensions % depth;
+        if(target.coordinates_[cd] < node->pt_.coordinates_[cd])
+            return searchRec(node->left_ptr_, target, depth+1);
+        return searchRec(node->right_ptr_, target, depth+1);
     }
 
     bool KDTree::search(const Point& pt)

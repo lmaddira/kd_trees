@@ -9,6 +9,7 @@
 #include <iostream>
 #include <array>
 #include <memory>
+#include <stdexcept>
 
 
 
@@ -20,6 +21,17 @@ namespace kd_trees{
         std::array<double, kDimensions> coordinates_;
         Point(std::array<double, kDimensions> coordinates) : coordinates_(std::move(coordinates)) {}  
         void print();
+        
+        /**
+         * overloading the [] for non const objects
+        */
+        double& operator[](int index);
+        const double& operator[](int index)const;
+    
+        /**
+         * overloading the == operator
+        */
+        bool operator==(const Point& other)const;
     };
 
     double distance(const Point& from_pt, const Point& to_point);
